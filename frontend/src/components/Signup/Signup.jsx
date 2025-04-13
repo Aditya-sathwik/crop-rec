@@ -6,7 +6,8 @@ import { User, Phone, Mail, Lock } from 'lucide-react';
 import axios from 'axios';
 import { ToastContainer } from 'react-toastify';
 import { handleError, handleSuccess } from '../../utils/errortost';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,Link } from 'react-router-dom';
+import { API_ENDPOINTS } from '../../utils/apiConstants';
 
 const Signup = () => {
   const [signUpValues, setSignUpValues] = useState({
@@ -29,12 +30,12 @@ const Signup = () => {
 
     try {
       const { farmersName, farmersPhone, farmersEmail, password } = signUpValues;
-      const response = await axios.post("http://localhost:8000/api/v1/auth/signup", {
-        farmersName,
-        farmersPhone,
-        farmersEmail,
-        password,
-      });
+      const response = await axios.post(API_ENDPOINTS.SIGNUP, {
+farmersName,
+farmersPhone,
+farmersEmail,
+password,
+});
       handleSuccess("Signup Successful");
       setTimeout(() => navigate("/login"), 1000);
     } catch (error) {
@@ -143,6 +144,12 @@ const Signup = () => {
               Sign Up
             </div>
           </CustomButton>
+
+          <p className="mt-4 text-center text-sm md:text-base text-gray-700">
+                      Already have an account?{' '}
+                        <Link to="/Login" className="text-blue-500 underline">Login</Link>
+                    </p>
+
           <div className="mt-4 text-center text-black">OR</div>
           <div className="flex justify-center mt-4">
             <button

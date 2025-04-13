@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { handleError, handleSuccess } from '../../utils/errortost';
 import axios from "axios";
+import { API_ENDPOINTS } from '../../utils/apiConstants';
 
 const getNavButton = (to, label, className = "") => (
   <li className={`${className} flex flex-col items-center hover:font-bold group`}>
@@ -18,22 +19,22 @@ export default function NavBar({ setIsAuthenticated }) {
 
   const handleLogout = async () => {
     try {
-      await axios.post(
-        "http://localhost:8000/api/v1/auth/logout",
+      const response = await axios.post(
+        API_ENDPOINTS.LOGOUT,
         {},
         { withCredentials: true }
       );
-      setIsAuthenticated(false);  // Update the auth state
+      console.log("Logout response:", response.data);
+      setIsAuthenticated(false);
       handleSuccess("Logout successful");
-      navigate("/login");  // This should now work
+      navigate("/login");
       console.log("Logged out successfully!");
     } catch (error) {
-      const errorMessage = error.response?.data?.message || "Logout failed. Please try again.";
-      // Replace with your actual error handler (e.g., toast)
+      console.error("Full error details:", error);
+      const errorMessage = error.response?.data?.message || "Unknown error";
       console.error("Logout error:", errorMessage);
     }
   };
-
   return (
     <nav className="w-full h-[80px] bg-[#334B35] flex justify-between items-center sticky top-0 z-50 px-4">
       <Link to="/" className="flex items-center">

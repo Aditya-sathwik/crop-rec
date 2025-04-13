@@ -6,6 +6,7 @@ import axios from "axios"
 import { Leaf, Droplet, Thermometer, Wind, ClipboardList, Search, Sprout } from "lucide-react"
 import bg from "../../assets/cropbg.jpg"
 import { handleError } from "../../utils/errortost"
+import { API_ENDPOINTS } from '../../utils/apiConstants';
 
 const CropRecommendation = () => {
   const navigate = useNavigate()
@@ -86,7 +87,7 @@ const CropRecommendation = () => {
 
         return
       }
-      const response = await axios.post("http://localhost:8000/api/v1/crop/recommendCrop", formData, {
+      const response = await axios.post(API_ENDPOINTS.RECOMMEND_CROP, formData, {
         headers: {
           Authorization: `Bearer ${accessToken}`, // Add the token to the Authorization header
         },

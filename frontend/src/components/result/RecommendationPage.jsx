@@ -6,6 +6,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import axios from 'axios';
 import { handleError } from '../../utils/errortost';
 import { Sprout, Tractor ,Shrub,Activity, Thermometer, Droplet, BarChart2, Leaf } from 'lucide-react'; // Import relevant icons
+import { API_ENDPOINTS } from '../../utils/apiConstants';
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -58,11 +59,7 @@ export default function RecommendationPage() {
           return;
         }
 
-        const response = await axios.get(`http://localhost:8000/api/v1/crop/getcrop/${initialRecommendation}`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        const response = await axios.get(`${API_ENDPOINTS.RECOMMEND_CROP}/${initialRecommendation}`, { headers: { Authorization: `Bearer ${accessToken}` } });
 
         // Extract the 'data' object from the response
         const resultData = response.data.data; // Note the nested 'data' key

@@ -6,32 +6,33 @@ import { User, Lock } from 'lucide-react';
 import axios from 'axios';
 import { ToastContainer } from 'react-toastify';
 import { handleError, handleSuccess } from '../../utils/errortost';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import PropTypes from 'prop-types'; // Added for prop type checking
+import { API_ENDPOINTS } from '../../utils/apiConstants';
 
-const Login = ({setIsAuthenticated}) => { 
+const Login = ({ setIsAuthenticated }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [termsAccepted, setTermsAccepted] = useState(false);
     const navigate = useNavigate();
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         // Validation logic remains the same
         if (!username || !password) {
             await handleError('Please fill all the fields');
             return;
         }
-    
+
         if (!termsAccepted) {
             await handleError('Please accept the terms and conditions');
             return;
         }
-    
+
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const phoneRegex = /^\d{10}$/;
         let loginData;
-    
+
         if (emailRegex.test(username)) {
             loginData = { farmersEmail: username, password };
         } else if (phoneRegex.test(username)) {
@@ -40,19 +41,15 @@ const Login = ({setIsAuthenticated}) => {
             await handleError('Please enter a valid email or phone number');
             return;
         }
-    
+
         try {
-            const response = await axios.post(
-                'http://localhost:8000/api/v1/auth/login',
-                loginData,
-                { withCredentials: true }
-            );
-    
+            const response = await axios.post(API_ENDPOINTS.LOGIN, loginData, { withCredentials: true });
+
             if (response?.data?.success) {
                 localStorage.setItem('accessToken', response.data.data.accessToken);
                 localStorage.setItem('farmersName', response.data.data.user.farmersName);
                 setIsAuthenticated(true);
-                
+
                 // Wait for toast to complete before navigating
                 await handleSuccess('Login Successful');
                 navigate('/');
@@ -86,15 +83,15 @@ const Login = ({setIsAuthenticated}) => {
     return (
         <div className="flex flex-col lg:flex-row h-screen mx-[20px] my-[20px] rounded-lg shadow-2xl" id="login">
             <div className="w-full bg-white p-10 flex flex-col justify-center rounded-lg">
-                <h1 className="text-3xl md:text-4xl lg:text-6xl px-10 py-9 font-bold mb-6 text-center" 
-                    style={{ 
-                        background: 'linear-gradient(90deg, #9ebd13 0%, #008552 100%)', 
-                        WebkitBackgroundClip: 'text', 
-                        color: 'transparent' 
+                <h1 className="text-3xl md:text-4xl lg:text-6xl px-10 py-9 font-bold mb-6 text-center"
+                    style={{
+                        background: 'linear-gradient(90deg, #9ebd13 0%, #008552 100%)',
+                        WebkitBackgroundClip: 'text',
+                        color: 'transparent'
                     }}>
                     Smart Agro.
                 </h1>
-                <h2 className="text-sm md:text-xl lg:text-3xl font-bold mb-6 text-center" 
+                <h2 className="text-sm md:text-xl lg:text-3xl font-bold mb-6 text-center"
                     style={{ color: 'black' }}>
                     Welcome Back! Please Login to Your Account
                 </h2>
@@ -108,7 +105,7 @@ const Login = ({setIsAuthenticated}) => {
                             required={field.required}
                             Icon={field.Icon}
                             value={field.name === 'username' ? username : password}
-                            onChange={(e) => field.name === 'username' ? 
+                            onChange={(e) => field.name === 'username' ?
                                 setUsername(e.target.value) : setPassword(e.target.value)}
                         />
                     ))}
@@ -124,8 +121,8 @@ const Login = ({setIsAuthenticated}) => {
                             I agree to the terms and conditions
                         </label>
                     </div>
-                    <CustomButton 
-                        type="submit" 
+                    <CustomButton
+                        type="submit"
                         style={{ fontSize: '0.875rem', padding: '0.5rem 1rem' }}
                     >
                         <div className='flex items-center justify-center'>
@@ -133,9 +130,17 @@ const Login = ({setIsAuthenticated}) => {
                             Login
                         </div>
                     </CustomButton>
+
+                    <p className="mt-4 text-center text-sm md:text-base text-gray-700">
+                        Don't have an account?{' '}
+                        <Link to="/signup" className="text-blue-500 underline">Sign Up</Link>
+                    </p>
+
+
+
                     <div className="mt-4 text-center text-black">OR</div>
                     <div className="flex justify-center mt-4">
-                        <button 
+                        <button
                             aria-label="Sign in with Google"
                             className="flex items-center gap-3 bg-google-button-blue rounded-full p-0.5 pr-4 transition-colors duration-300 hover:bg-google-button-blue-hover"
                             type="button"
@@ -153,8 +158,8 @@ const Login = ({setIsAuthenticated}) => {
                     </div>
                 </form>
             </div>
-            <div 
-                className="w-full bg-cover bg-center rounded-lg" 
+            <div
+                className="w-full bg-cover bg-center rounded-lg"
                 style={{ backgroundImage: "url('/images/farmer.png')" }}
             />
             <ToastContainer />
